@@ -1,13 +1,15 @@
 import { Router} from 'express'
-import RegisterModel from '../models/register.schema'
+import UserModel from '../models/userModel'
+import { hashPassword } from '../lib/helper'
 
 
 const router = Router()
 
 
-router.post('/register', (req,res) => {
+router.post('/register', async(req,res) => {
 
     const {username, name, password, email}=req.body
+    console.log(username, name, password, email)
 
 
     if(!username || !name || !password || !email){
@@ -15,17 +17,18 @@ router.post('/register', (req,res) => {
     }
 
 
-    const exists=RegisterModel.findOne({username})
+    const exists=await UserModel.findOne({username})
+
     if(exists){
-        return res.status(400).send('User already exists')
+        res.status(400).send('User already exists')
+        return
     }
 
-    const register=new RegisterModel({username, name, password, email})
+    const register=new UserModel({username, name, password: hashPassword(password), email})
     register.save()
 
     return res.status(200).send('User registered successfully')
 
 })
 
-
-
+export default router
