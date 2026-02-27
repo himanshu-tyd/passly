@@ -6,24 +6,24 @@ import { getToken } from '../lib/token'
 const router = Router()
 
 
-router.post('/login', async (req,res) => {
+router.post('/signin', async (req,res) => {
 
-    const {username,password}=req.body
+    const {email,password}=req.body
 
 
-    if(!username || !password){
-        return res.status(400).send('Credentials are required')
+    if(!email || !password){
+        return res.status(400).json({success:false, message:"Field Required"})
     }
 
-    const exist=await UserModel.findOne({username})
+    const exist=await UserModel.findOne({email}).populate("password")
 
     if(!exist){
-        return res.status(400).send('Invalid Credential')
+        return res.status(400).json({success:false, message:'Invalid Credentials'})
     }   
   
     if(!compareHash(password, exist.password)){
         
-        return res.status(400).send('Invalid Credential')
+        return res.status(400).json({success:false, message:'Invalid Credentials'})
     }
 
    
@@ -37,7 +37,7 @@ router.post('/login', async (req,res) => {
     })
 
     
-    return res.status(200).send('Login successful')
+    return res.status(200).json({success:true, message:'Login SuccessFull', data:exist})
 
 
 })

@@ -6,7 +6,7 @@ import { hashPassword } from '../lib/helper'
 const router = Router()
 
 
-router.post('/register', async(req,res) => {
+router.post('/signup', async(req,res) => {
 
     const {username, name, password, email}=req.body
     console.log(username, name, password, email)
@@ -27,7 +27,7 @@ router.post('/register', async(req,res) => {
     const register=new UserModel({username, name, password: hashPassword(password), email})
     register.save()
 
-    return res.status(200).send('User registered successfully')
+    return res.status(200).json({success: true, message: 'User registered successfully', data: register})
 
 })
 
