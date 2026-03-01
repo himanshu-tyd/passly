@@ -31,6 +31,7 @@ const encript=(text:string, key:Buffer<ArrayBuffer>)=>{
 export const generateKeyAndEncript=(text:string)=>{
      const key=crypto.randomBytes(32)
      const encriptedPass=encript(text, key)
+     const hexkey=key.toString('hex')
 
-     return {key, encriptedPass}
+     return {hexkey, encriptedPass}
 }

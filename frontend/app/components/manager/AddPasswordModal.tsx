@@ -3,7 +3,6 @@
 import { useState } from "react";
 import WebsiteInput from "./WebsiteInput";
 import CredentialsInput from "./CredentialsInput";
-import CategorySelector from "./CategorySelector";
 import NotesInput from "./NotesInput";
 
 interface AddPasswordModalProps {
@@ -16,7 +15,7 @@ export interface PasswordData {
   website: string;
   username: string;
   password: string;
-  category: string;
+  email: string;
   notes: string;
 }
 
@@ -29,11 +28,22 @@ export default function AddPasswordModal({
     website: "",
     username: "",
     password: "",
-    category: "Logins",
+    email: "",
     notes: "",
   });
 
+  const isFormValid = () => {
+    return (
+      formData.website.trim() !== "" &&
+      formData.username.trim() !== "" &&
+      formData.password.trim() !== "" &&
+      formData.email.trim() !== ""
+    );
+  };
+
   const handleSave = () => {
+    if (!isFormValid()) return;
+
     if (onSave) {
       onSave(formData);
     }
@@ -42,9 +52,10 @@ export default function AddPasswordModal({
       website: "",
       username: "",
       password: "",
-      category: "Logins",
+      email: "",
       notes: "",
     });
+
     onClose();
   };
 
@@ -100,12 +111,20 @@ export default function AddPasswordModal({
               }
             />
 
-            <CategorySelector
-              value={formData.category}
-              onChange={(v) =>
-                setFormData({ ...formData, category: v })
-              }
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                placeholder="your@email.com"
+                className="w-full px-4 py-2 bg-white/5 border border-border-dark rounded-lg text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+              />
+            </div>
 
             <NotesInput
               value={formData.notes}
@@ -125,7 +144,8 @@ export default function AddPasswordModal({
             </button>
             <button
               onClick={handleSave}
-              className="w-14 h-14 sm:w-auto sm:h-auto sm:flex-1 sm:px-6 sm:py-3 bg-white text-black rounded-full sm:rounded-xl shadow-lg sm:shadow-none flex items-center justify-center hover:scale-105 sm:hover:bg-gray-100 active:scale-95 sm:active:scale-95 transition-transform duration-200 font-semibold"
+              disabled={!isFormValid()}
+              className="w-14 h-14 sm:w-auto sm:h-auto sm:flex-1 sm:px-6 sm:py-3 bg-white text-black rounded-full sm:rounded-xl shadow-lg sm:shadow-none flex items-center justify-center hover:scale-105 sm:hover:bg-gray-100 active:scale-95 sm:active:scale-95 transition-transform duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               <span className="material-symbols-outlined sm:hidden font-semibold text-[28px]">
                 check

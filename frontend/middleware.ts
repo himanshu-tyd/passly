@@ -6,6 +6,8 @@ export function middleware(request: NextRequest) {
   // Check if user has a token cookie
   const token = request.cookies.get("token")?.value;
 
+  console.log(token)
+
   // If user is signed in (has token)
   if (token) {
     // Redirect away from signin/signup pages to manager dashboard

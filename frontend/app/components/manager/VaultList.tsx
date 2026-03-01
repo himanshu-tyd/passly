@@ -11,6 +11,9 @@ interface VaultListProps {
 export default function VaultList({ items, onCopy }: VaultListProps) {
   // for now we render a single section called "All items"; later this could
   // split into categories or more complex grouping.
+
+  console.log('ITEMS ALL', items)
+
   return (
     <PasswordSection
       title="All Items"

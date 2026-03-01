@@ -2,10 +2,13 @@ import { Schema ,model } from "mongoose";
 
 
 const passwordSchema=new Schema({
+    userId: {
+        type: String,
+        required: true
+    },
     username:{
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     password:{
         type: String,
@@ -23,8 +26,12 @@ const passwordSchema=new Schema({
         type: String,
         required: true
     },
-    tag:{
+    notes:{
         type: String,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 })
 

@@ -3,8 +3,9 @@ import mongoose from 'mongoose'
 import signupRouter from './routes/signup.route'
 import signIn from './routes/signin.rout'
 import PasswordRouter from './routes/password.route'
+import getDataRouter from './routes/getData'
 import cors from 'cors'
-
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -20,11 +21,13 @@ app.get('/', (req,  res)=>{
     res.send('Hello World')
 })
 
+app.use(cookieParser())
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use('/api', signupRouter)
 app.use('/api', signIn)
 app.use('/api', PasswordRouter)
+app.use('/api', getDataRouter)
 
 
 app.listen(port, async() => {

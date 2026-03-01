@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AddFAB from "../components/manager/AddFAB";
 import ManagerNav from "../components/manager/ManagerNav";
 import ManagerHeader from "../components/manager/ManagerHeader";
@@ -8,27 +8,52 @@ import SearchBar from "../components/manager/SearchBar";
 import FilterChips from "../components/manager/FilterChips";
 import VaultList from "../components/manager/VaultList";
 import AddPasswordModal from "../components/manager/AddPasswordModal";
-import { VAULT_ITEMS } from "../components/manager/vaultData";
 import { PasswordEntry } from "../components/manager/PasswordSection";
+import useSavePassword from "../../hooks/useSavePassword";
+import usePasswords from "../../hooks/usePasswords";
 
 
 
 export default function ManagerPage() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { savePassword, loading, error, success } = useSavePassword();
+  const { items, loading: loadingPasswords, error: fetchError, refresh } = usePasswords();
 
   const filteredItems = useMemo((): PasswordEntry[] => {
-    return VAULT_ITEMS.filter(
+    return items.filter(
       (item) =>
         item.title.toLowerCase().includes(search.toLowerCase()) ||
         item.username.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search, items]);
 
+
+ 
 
   const handleCopy = (username: string, title: string) => {
     navigator.clipboard.writeText(username);
     console.log(`Copied ${title} username to clipboard`);
+  };
+
+  const handleSavePassword = async (data: any) => {
+    try {
+      // transform modal data into backend payload
+      const payload = {
+        username: data.username,
+        platform_name: data.website,
+        password: data.password,
+        email: data.email,
+        notes: data.notes,
+      }
+      await savePassword(data);
+      console.log("Password saved successfully:", payload);
+      setIsModalOpen(false);
+      // refresh list after saving
+      refresh();
+    } catch (err) {
+      console.error("Failed to save password:", error);
+    }
   };
 
   return (
@@ -45,7 +70,11 @@ export default function ManagerPage() {
           <FilterChips />
 
           {/* list section */}
-          {filteredItems.length > 0 ? (
+          {loadingPasswords ? (
+            <p className="text-center py-12">Loading...</p>
+          ) : fetchError ? (
+            <p className="text-center py-12 text-red-400">{fetchError}</p>
+          ) : filteredItems.length > 0 ? (
             <VaultList items={filteredItems} onCopy={handleCopy} />
           ) : (
             <div className="text-center py-12">
@@ -72,10 +101,7 @@ export default function ManagerPage() {
       <AddPasswordModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSave={(data) => {
-          console.log("New password saved:", data);
-          // TODO: Add to vault
-        }}
+        onSave={handleSavePassword}
       />
     </div>
   );

@@ -1,7 +1,8 @@
+import { API_BASE } from "@/lib/config";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-const API_BASE = "http://localhost:8000/api";
+
 
 const useSignout = () => {
   const router = useRouter();
