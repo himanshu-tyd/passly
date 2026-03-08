@@ -7,9 +7,10 @@ export interface PasswordEntry {
   title: string;
   username: string;
   password: string;
+  email?: string;
   logoUrl?: string;
   bgColor?: string;
-  passKey:string
+  passKey: string;
 }
 
 interface PasswordSectionProps {
@@ -21,7 +22,6 @@ interface PasswordSectionProps {
 export default function PasswordSection({
   title,
   items,
-  onCopy,
 }: PasswordSectionProps) {
   if (items.length === 0) {
     return null;
@@ -40,10 +40,10 @@ export default function PasswordSection({
             title={item.title}
             username={item.username}
             password={item.password}
+            email={item.email}
             passKey={item.passKey}
             logoUrl={item.logoUrl}
             bgColor={item.bgColor}
-            onCopy={() => onCopy?.(item.id)}
           />
         ))}
       </div>

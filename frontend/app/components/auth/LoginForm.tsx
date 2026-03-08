@@ -15,7 +15,7 @@ export default function LoginForm() {
   useEffect(() => {
     if (data.success) {
       const timer = setTimeout(() => {
-        router.push("/manager");
+        router.push("/verify");
       }, 1500);
       return () => clearTimeout(timer);
     }

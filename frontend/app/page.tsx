@@ -4,10 +4,11 @@ import SystemStatus from "./components/SystemStatus";
 import TrustedBy from "./components/TrustedBy";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
+import LandingPageGuard from "./components/LandingPageGuard";
 
 export default function Home() {
   return (
-    <>
+    <LandingPageGuard>
       <Header />
       <main className="pt-20 sm:pt-24 pb-16 sm:pb-20 lg:pb-24 relative min-h-screen overflow-x-hidden">
         {/* Full-width grid background */}
@@ -24,6 +25,6 @@ export default function Home() {
         <CTA />
         <Footer />
       </main>
-    </>
+    </LandingPageGuard>
   );
 }

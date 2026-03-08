@@ -9,9 +9,10 @@ export interface PasswordEntry {
   title: string
   username: string
   password: string
+  email?: string
   logoUrl?: string
   bgColor?: string
-  passKey:Buffer
+  passKey: string
 }
 
 const usePasswords = () => {
@@ -34,9 +35,10 @@ const usePasswords = () => {
           title: d.platform_name || d.title || '',
           username: d.username,
           password: d.password,
-          logoUrl: "" ,
-          bgColor: "",
-          passKey:d.key
+          email: d.email || '',
+          logoUrl: '',
+          bgColor: '',
+          passKey: d.key,
         }))
         setItems(mapped)
 

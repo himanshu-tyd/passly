@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { isVerified } from "@/hooks/usePinVerification";
 import AddFAB from "../components/manager/AddFAB";
 import ManagerNav from "../components/manager/ManagerNav";
 import ManagerHeader from "../components/manager/ManagerHeader";
@@ -8,16 +10,30 @@ import SearchBar from "../components/manager/SearchBar";
 import FilterChips from "../components/manager/FilterChips";
 import VaultList from "../components/manager/VaultList";
 import AddPasswordModal from "../components/manager/AddPasswordModal";
-import { PasswordEntry } from "../components/manager/PasswordSection";
+import type { PasswordEntry } from "../components/manager/PasswordSection";
 import useSavePassword from "../../hooks/useSavePassword";
 import usePasswords from "../../hooks/usePasswords";
 
 
 
 export default function ManagerPage() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { savePassword, loading, error, success } = useSavePassword();
+
+  useEffect(() => {
+    if (!isVerified()) {
+      router.replace("/verify");
+      return;
+    }
+    const interval = setInterval(() => {
+      if (!isVerified()) {
+        router.replace("/verify");
+      }
+    }, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [router]);
+  const { savePassword, loading, error } = useSavePassword();
   const { items, loading: loadingPasswords, error: fetchError, refresh } = usePasswords();
 
   const filteredItems = useMemo((): PasswordEntry[] => {
@@ -30,11 +46,6 @@ export default function ManagerPage() {
 
 
  
-
-  const handleCopy = (username: string, title: string) => {
-    navigator.clipboard.writeText(username);
-    console.log(`Copied ${title} username to clipboard`);
-  };
 
   const handleSavePassword = async (data: any) => {
     try {
@@ -75,7 +86,7 @@ export default function ManagerPage() {
           ) : fetchError ? (
             <p className="text-center py-12 text-red-400">{fetchError}</p>
           ) : filteredItems.length > 0 ? (
-            <VaultList items={filteredItems} onCopy={handleCopy} />
+            <VaultList items={filteredItems} />
           ) : (
             <div className="text-center py-12">
               <span

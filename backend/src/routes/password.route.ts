@@ -53,3 +53,5 @@ router.post('/password', authToken, async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
+export default router;
